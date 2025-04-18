@@ -14,10 +14,14 @@ out vec2 texCoord;
 // Controls the scale of the vertices
 uniform float scale;
 
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 proj;
+
 void main()
 {
 	// Outputs the positions/coordinates of all vertices
-	gl_Position = vec4(aPos.x + aPos.x * scale, aPos.y + aPos.y * scale, aPos.z + aPos.z * scale, 1.0);
+	gl_Position = proj * view * model * vec4(aPos, 1.0);
 	// Assings the color  from the vertex Data "Color"
 	color = aColor;
 	// Assings the texture coordinates from the vertex Data to "texCoord"

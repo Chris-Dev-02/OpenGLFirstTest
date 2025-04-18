@@ -3,11 +3,18 @@
 #include<GLFW/glfw3.h>
 #include<stb/stb_image.h>
 
+#include<glm/glm.hpp>
+#include<glm/gtc/matrix_transform.hpp>
+#include<glm/gtc/type_ptr.hpp>
+
 #include"shaderClass.h"
 #include"VAO.h"
 #include"VAO.h"
 #include"EBO.h"
 #include "Texture.h"
+
+const unsigned int width = 800;
+const unsigned int height = 800;
 
 // Vertice coordinates
 GLfloat vertices[] = {
@@ -38,7 +45,7 @@ int main() {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	// Create a GLFWwindow object of 800 by 800 pixels, naming it "OpenGL_FirstTest"
-	GLFWwindow* window = glfwCreateWindow(800, 800, "OpenGL_FirstTest", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(width, height, "OpenGL_FirstTest", NULL, NULL);
 	// Error check if the window fails to create
 	if (window == NULL) {
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -52,7 +59,7 @@ int main() {
 
 	// Specify the viewport of OpenGL in the Window
 	// In this case the viewport goes from x = 0, y = 0, to x = 800, y = 800
-	glViewport(0, 0, 800, 800);
+	glViewport(0, 0, width, height);
 
 	// Create Shader object using shaders default.vert and default.frag
 	Shader shaderProgram("default.vert", "default.frag");
@@ -90,6 +97,20 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT);
 		// Tell OpenGL which shader program we want to use
 		shaderProgram.Activate();
+
+		glm::mat4 model = glm::mat4(1.0f); // Identity matrix
+		glm::mat4 view = glm::mat4(1.0f); // Identity matrix
+		glm::mat4 proj = glm::mat4(1.0f); // Identity matrix
+		view = glm::translate(view, glm::vec3(0.0f, -0.5f, -2.0f)); // Translate the view matrix
+		proj = glm::perspective(glm::radians(45.0f), (float)(width / height), 0.1f, 100.0f); // Perspective projection matrix
+
+		int modelLoc = glGetUniformLocation(shaderProgram.ID, "model");
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));		
+		int viewLoc = glGetUniformLocation(shaderProgram.ID, "view");
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));		
+		int projLoc = glGetUniformLocation(shaderProgram.ID, "proj");
+		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(proj));
+
 		// Assign value to the uniform variable in the vertex shader; NOTE:  Must always be done after activing the program
 		glUniform1f(uniID, 0.5f);
 		// Bind the texture so that appears in rendering 
