@@ -19,15 +19,20 @@ const unsigned int height = 800;
 // Vertice coordinates
 GLfloat vertices[] = {
     //Coordinates           Colors               Texture Coordinates
-    -0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f,    0.0f, 0.0f,  // Lower left corner
-    -0.5f,  0.5f, 0.0f,    0.0f, 1.0f, 0.0f,    0.0f, 1.0f,  // Upper left corner
-     0.5f,  0.5f, 0.0f,    0.0f, 0.0f, 1.0f,    1.0f, 1.0f,  // Upper right corner
-     0.5f, -0.5f, 0.0f,    1.0f, 1.0f, 1.0f,    1.0f, 0.0f   // Lower right corner
+    -0.5f,  0.0f,  0.5f,    0.83f, 0.70f, 0.44f,    0.0f, 0.0f,  // Lower left corner
+    -0.5f,  0.0f, -0.5f,    0.83f, 0.70f, 0.44f,    5.0f, 0.0f,  // Upper left corner
+     0.5f,  0.0f, -0.5f,    0.83f, 0.70f, 0.44f,    0.0f, 0.0f,  // Upper right corner
+     0.5f,  0.0f,  0.5f,    0.83f, 0.70f, 0.44f,    5.0f, 0.0f,  // Lower right corner
+     0.0f,  0.8f,  0.0f,    0.92f, 0.86f, 0.76f,    2.5f, 5.0f   // Lower right corner
 };
 
 GLuint indices[] = {
-	0, 2, 1, // Upper triangle
-	0, 3, 2 // Lower triangle
+	0, 1, 2, // Upper triangle
+	0, 2, 3, // Lower triangle
+	0, 1, 4, // Left triangle
+	1, 2, 4, // Upper triangle
+	2, 3, 4, // Right triangle
+	3, 0, 4  // Lower triangle
 };
 
 int main() {
@@ -89,21 +94,40 @@ int main() {
 	Texture popCat("pop_cat_.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
 	popCat.texUnit(shaderProgram, "tex0", 0);
 
+	// Variables that help the rotation of the pyramid
+	float rotation = 0.0f; // Rotation angle
+	double prevTime = glfwGetTime(); // Previous time for delta time calculation
+
+	glEnable(GL_DEPTH_TEST); // Enable depth buffer
+
 	// Main while loop
 	while (!glfwWindowShouldClose(window)) {
 		// Specify the color of the background
 		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
-		// Clean the back buffer and assign the new color to it
-		glClear(GL_COLOR_BUFFER_BIT);
+		// Clean the back buffer and depth buffer and assigns the new color to it
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// Tell OpenGL which shader program we want to use
 		shaderProgram.Activate();
 
+		// Simple timer 
+		double crntTime = glfwGetTime(); // Current time
+		if (crntTime - prevTime >= 1 / 60)  // If 10ms have passed
+		{
+			rotation += 0.01f; // Increase rotation angle
+			prevTime = crntTime; // Update previous time
+		}
+
+		// Initializes matrices so they are not null matrix
 		glm::mat4 model = glm::mat4(1.0f); // Identity matrix
 		glm::mat4 view = glm::mat4(1.0f); // Identity matrix
 		glm::mat4 proj = glm::mat4(1.0f); // Identity matrix
+
+		// Assigns different transformations to each matrix
+		model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotate the model matrix
 		view = glm::translate(view, glm::vec3(0.0f, -0.5f, -2.0f)); // Translate the view matrix
 		proj = glm::perspective(glm::radians(45.0f), (float)(width / height), 0.1f, 100.0f); // Perspective projection matrix
 
+		// Outputs the matrices into the Vertex Shader
 		int modelLoc = glGetUniformLocation(shaderProgram.ID, "model");
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));		
 		int viewLoc = glGetUniformLocation(shaderProgram.ID, "view");
@@ -119,7 +143,7 @@ int main() {
 		VAO1.Bind();
 		// Drawn the triangule using the GL_TRIANGLES primitive
 		//glDrawArrays(GL_TRIANGLES, 0, 3);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, sizeof(indices)/sizeof(int), GL_UNSIGNED_INT, 0);
 		// Swap to the back buffer with the front buffer
 		glfwSwapBuffers(window);
 		// Take care of all GLFW events
