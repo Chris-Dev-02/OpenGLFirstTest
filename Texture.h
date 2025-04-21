@@ -15,7 +15,7 @@ public:
 	Texture(const char* image, GLenum texType, GLenum slot, GLenum format, GLenum pixelType);
 
 	// Assings a texture unit to the texture
-	void texUnit(Shader shader, const char* uniform, GLuint unit);
+	void texUnit(Shader& shader, const char* uniform, GLuint unit);
 	// Binds the texture
 	void Bind();
 	// Unbinds the texture
