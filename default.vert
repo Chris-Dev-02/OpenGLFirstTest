@@ -31,5 +31,6 @@ void main()
 	color = aColor;
 	// Assings the texture coordinates from the vertex Data to "texCoord"
 	texCoord = aTex;
+	// Assigns the normal from the Vertex Data to "Normal"
 	Normal = aNormal;
 };
