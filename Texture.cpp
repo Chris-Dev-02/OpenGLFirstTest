@@ -17,7 +17,8 @@ Texture::Texture(const char* image, GLenum texType, GLenum slot, GLenum format, 
 	// Generates an OpenGL texture object
 	glGenTextures(1, &ID);
 	// Assigns the texture object to the texture unit
-	glActiveTexture(slot);
+	glActiveTexture(GL_TEXTURE0 + slot);
+	unit = slot; // Assigns the texture unit to the texture object
 	glBindTexture(texType, ID);
 
 	// Configures the type of algorithm that is used to minimize and maximize the texture
@@ -33,7 +34,7 @@ Texture::Texture(const char* image, GLenum texType, GLenum slot, GLenum format, 
 	// glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, flatcolor);
 
 	// Assigns the image to the OpenGL texture object
-	glTexImage2D(texType, 0, GL_RGB, widthImg, heightImg, 0, format, pixelType, bytes);
+	glTexImage2D(texType, 0, GL_RGBA, widthImg, heightImg, 0, format, pixelType, bytes);
 	// Generates the mipmap of the texture
 	glGenerateMipmap(texType);
 
@@ -53,6 +54,7 @@ void Texture::texUnit(Shader& shader, const char* uniform, GLuint unit)
 
 void Texture::Bind()
 {
+	glActiveTexture(GL_TEXTURE0 + unit); // Activate the texture unit
 	glBindTexture(type, ID);
 }
 

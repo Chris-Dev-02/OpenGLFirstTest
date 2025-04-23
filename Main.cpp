@@ -17,39 +17,53 @@
 const unsigned int width = 800;
 const unsigned int height = 800;
 
-// Vertice coordinates
+//// Vertice coordinates
+//GLfloat vertices[] =
+//{   //     COORDINATES     /        COLORS       /   TexCoord  /        NORMALS       //
+//	-0.5f, 0.0f,  0.5f,    0.83f, 0.70f, 0.44f,   0.0f, 0.0f,   0.0f, -1.0f,  0.0f, // Bottom side
+//	-0.5f, 0.0f, -0.5f,    0.83f, 0.70f, 0.44f,   0.0f, 5.0f,   0.0f, -1.0f,  0.0f, // Bottom side
+//	 0.5f, 0.0f, -0.5f,    0.83f, 0.70f, 0.44f,   5.0f, 5.0f,   0.0f, -1.0f,  0.0f, // Bottom side
+//	 0.5f, 0.0f,  0.5f,    0.83f, 0.70f, 0.44f,   5.0f, 0.0f,   0.0f, -1.0f,  0.0f, // Bottom side
+//
+//	-0.5f, 0.0f, -0.5f,    0.83f, 0.70f, 0.44f,   0.0f, 0.0f,  -0.8f,  0.5f,  0.0f, // Left Side
+//	-0.5f, 0.0f,  0.5f,    0.83f, 0.70f, 0.44f,   5.0f, 0.0f,  -0.8f,  0.5f,  0.0f, // Left Side
+//	 0.0f, 0.8f,  0.0f,    0.92f, 0.86f, 0.76f,   2.5f, 5.0f,  -0.8f,  0.5f,  0.0f, // Left Side
+//
+//	-0.5f, 0.0f, -0.5f,    0.83f, 0.70f, 0.44f,   5.0f, 0.0f,   0.0f,  0.5f, -0.8f, // Non-facing side
+//	 0.5f, 0.0f, -0.5f,    0.83f, 0.70f, 0.44f,   0.0f, 0.0f,   0.0f,  0.5f, -0.8f, // Non-facing side
+//	 0.0f, 0.8f,  0.0f,    0.92f, 0.86f, 0.76f,   2.5f, 5.0f,   0.0f,  0.5f, -0.8f, // Non-facing side
+//
+//	 0.5f, 0.0f, -0.5f,    0.83f, 0.70f, 0.44f,   0.0f, 0.0f,   0.8f,  0.5f,  0.0f, // Right side
+//	 0.5f, 0.0f,  0.5f,    0.83f, 0.70f, 0.44f,   5.0f, 0.0f,   0.8f,  0.5f,  0.0f, // Right side
+//	 0.0f, 0.8f,  0.0f,    0.92f, 0.86f, 0.76f,   2.5f, 5.0f,   0.8f,  0.5f,  0.0f, // Right side
+//
+//	 0.5f, 0.0f,  0.5f,    0.83f, 0.70f, 0.44f,   5.0f, 0.0f,   0.0f,  0.5f,  0.8f, // Facing side
+//	-0.5f, 0.0f,  0.5f,    0.83f, 0.70f, 0.44f,   0.0f, 0.0f,   0.0f,  0.5f,  0.8f, // Facing side
+//	 0.0f, 0.8f,  0.0f,    0.92f, 0.86f, 0.76f,   2.5f, 5.0f,   0.0f,  0.5f,  0.8f  // Facing side
+//};
+
 // Vertices coordinates
 GLfloat vertices[] =
-{   //     COORDINATES     /        COLORS       /   TexCoord  /        NORMALS       //
-	-0.5f, 0.0f,  0.5f,    0.83f, 0.70f, 0.44f,   0.0f, 0.0f,   0.0f, -1.0f,  0.0f, // Bottom side
-	-0.5f, 0.0f, -0.5f,    0.83f, 0.70f, 0.44f,   0.0f, 5.0f,   0.0f, -1.0f,  0.0f, // Bottom side
-	 0.5f, 0.0f, -0.5f,    0.83f, 0.70f, 0.44f,   5.0f, 5.0f,   0.0f, -1.0f,  0.0f, // Bottom side
-	 0.5f, 0.0f,  0.5f,    0.83f, 0.70f, 0.44f,   5.0f, 0.0f,   0.0f, -1.0f,  0.0f, // Bottom side
-
-	-0.5f, 0.0f, -0.5f,    0.83f, 0.70f, 0.44f,   0.0f, 0.0f,  -0.8f,  0.5f,  0.0f, // Left Side
-	-0.5f, 0.0f,  0.5f,    0.83f, 0.70f, 0.44f,   5.0f, 0.0f,  -0.8f,  0.5f,  0.0f, // Left Side
-	 0.0f, 0.8f,  0.0f,    0.92f, 0.86f, 0.76f,   2.5f, 5.0f,  -0.8f,  0.5f,  0.0f, // Left Side
-
-	-0.5f, 0.0f, -0.5f,    0.83f, 0.70f, 0.44f,   5.0f, 0.0f,   0.0f,  0.5f, -0.8f, // Non-facing side
-	 0.5f, 0.0f, -0.5f,    0.83f, 0.70f, 0.44f,   0.0f, 0.0f,   0.0f,  0.5f, -0.8f, // Non-facing side
-	 0.0f, 0.8f,  0.0f,    0.92f, 0.86f, 0.76f,   2.5f, 5.0f,   0.0f,  0.5f, -0.8f, // Non-facing side
-
-	 0.5f, 0.0f, -0.5f,    0.83f, 0.70f, 0.44f,   0.0f, 0.0f,   0.8f,  0.5f,  0.0f, // Right side
-	 0.5f, 0.0f,  0.5f,    0.83f, 0.70f, 0.44f,   5.0f, 0.0f,   0.8f,  0.5f,  0.0f, // Right side
-	 0.0f, 0.8f,  0.0f,    0.92f, 0.86f, 0.76f,   2.5f, 5.0f,   0.8f,  0.5f,  0.0f, // Right side
-
-	 0.5f, 0.0f,  0.5f,    0.83f, 0.70f, 0.44f,   5.0f, 0.0f,   0.0f,  0.5f,  0.8f, // Facing side
-	-0.5f, 0.0f,  0.5f,    0.83f, 0.70f, 0.44f,   0.0f, 0.0f,   0.0f,  0.5f,  0.8f, // Facing side
-	 0.0f, 0.8f,  0.0f,    0.92f, 0.86f, 0.76f,   2.5f, 5.0f,   0.0f,  0.5f,  0.8f  // Facing side
+{   //     COORDINATES     /      COLORS      /   TexCoord  /       NORMALS       //
+	-1.0f, 0.0f,  1.0f,     0.0f, 0.0f, 0.0f,   0.0f, 0.0f,    0.0f, 1.0f, 0.0f,
+	-1.0f, 0.0f, -1.0f,     0.0f, 0.0f, 0.0f,   0.0f, 1.0f,    0.0f, 1.0f, 0.0f,
+	 1.0f, 0.0f, -1.0f,     0.0f, 0.0f, 0.0f,   1.0f, 1.0f,    0.0f, 1.0f, 0.0f,
+	 1.0f, 0.0f,  1.0f,     0.0f, 0.0f, 0.0f,   1.0f, 0.0f,    0.0f, 1.0f, 0.0f
 };
+
+
+//GLuint indices[] = {
+//	0, 1, 2,	// Botton side
+//	0, 2, 3,	// Botton side
+//	4, 6, 5,	// Left side
+//	7, 9, 8,	// Non-facing side
+//	10, 11, 12,	// Right side
+//	13, 15, 14,	// Facing side
+//};
 
 GLuint indices[] = {
 	0, 1, 2,	// Botton side
 	0, 2, 3,	// Botton side
-	4, 6, 5,	// Left side
-	7, 9, 8,	// Non-facing side
-	10, 11, 12,	// Right side
-	13, 15, 14,	// Facing side
 };
 
 GLfloat lightVertices[] = {
@@ -169,8 +183,11 @@ int main() {
 	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightColor.x, lightColor.y, lightColor.z);
 
 	// Textures
-	Texture popCat("pop_cat_.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
-	popCat.texUnit(shaderProgram, "tex0", 0);
+	Texture woodTex("Wood_Planks_014_basecolor_512.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
+	//Texture woodTex("pop_cat_.jpg", GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE);
+	woodTex.texUnit(shaderProgram, "tex0", 0);
+	Texture woodSpec("Wood_Planks_014_specular_512.png", GL_TEXTURE_2D, 1, GL_RED, GL_UNSIGNED_BYTE);
+	woodSpec.texUnit(shaderProgram, "tex1", 1);
 
 	glEnable(GL_DEPTH_TEST); // Enable depth buffer
 
@@ -197,7 +214,8 @@ int main() {
 		camera.Matrix(shaderProgram, "camMatrix");
 
 		// Bind the texture so that appears in rendering 
-		popCat.Bind();
+		woodTex.Bind();
+		woodSpec.Bind();
 		// Bind the VAO so OpenGL knows to use it 
 		VAO1.Bind();
 		// Drawn the triangule using the GL_TRIANGLES primitive
@@ -223,7 +241,8 @@ int main() {
 	VAO1.Delete();
 	VBO1.Delete();
 	EBO1.Delete();
-	popCat.Delete();
+	woodTex.Delete();
+	woodSpec.Delete();
 	shaderProgram.Delete();
 
 	lightVAO.Delete();

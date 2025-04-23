@@ -166,6 +166,10 @@
   <ItemGroup>
     <Image Include="..\..\..\..\Downloads\pop_cat.jpg" />
     <Image Include="..\..\..\..\Downloads\pop_cat_.jpg" />
+    <Image Include="Wood_Planks_014_specular_512.png" />
+    <Image Include="Wood_Planks_014_specular.png" />
+    <Image Include="Wood_Planks_014_basecolor_512.png" />
+    <Image Include="Wood_Planks_014_basecolor.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
