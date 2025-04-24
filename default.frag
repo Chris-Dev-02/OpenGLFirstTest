@@ -1,19 +1,19 @@
 #version 330 core
 out vec4 FragColor;
 
+// Imports the current position from the vertex shader
+in vec3 crntPos;
+// Imports the normal from the vertex shader
+in vec3 Normal;
 // Imports the color from vertex shader
 in vec3 color;
 // Imports the texture coordinates from vertex shader
 in vec2 texCoord;
-// Imports the normal from the vertex shader
-in vec3 Normal;
-// Imports the current position from the vertex shader
-in vec3 crntPos;
 
 // Gets the texture unit from the main function
-uniform sampler2D tex0;
+uniform sampler2D diffuse0;
 
-uniform sampler2D tex1;
+uniform sampler2D specular0;
 // Gets the light color from the main function
 uniform vec4 lightColor;
 // Gets the light position from the main function
@@ -47,7 +47,7 @@ vec4 pointLight()
     float specAmount = pow(max(dot(viewDirection, reflectionDirection), 0.0f), 16);
     float specular = specAmount * specularLight;
 
-    return (texture(tex0, texCoord) * (diffuse * inten + ambient) + texture(tex1, texCoord).r * specular * inten) * lightColor;
+    return (texture(diffuse0, texCoord) * (diffuse * inten + ambient) + texture(specular0, texCoord).r * specular * inten) * lightColor;
 }
 
 vec4 directLight()
@@ -67,7 +67,7 @@ vec4 directLight()
     float specAmount = pow(max(dot(viewDirection, reflectionDirection), 0.0f), 16);
     float specular = specAmount * specularLight;
 
-    return (texture(tex0, texCoord) * (diffuse + ambient) + texture(tex1, texCoord).r * specular) * lightColor;
+    return (texture(diffuse0, texCoord) * (diffuse + ambient) + texture(specular0, texCoord).r * specular) * lightColor;
 }
 
 vec4 spotLight()
@@ -95,7 +95,7 @@ vec4 spotLight()
     float angle = dot(vec3(0.0f, -1.0f, 0.0f), - lightDirection);
     float inten = clamp((angle - outerCone) / (innerCone - outerCone), 0.0f, 1.0f);
 
-    return (texture(tex0, texCoord) * (diffuse * inten + ambient) + texture(tex1, texCoord).r * specular * inten) * lightColor;
+    return (texture(diffuse0, texCoord) * (diffuse * inten + ambient) + texture(specular0, texCoord).r * specular * inten) * lightColor;
 }
 
 

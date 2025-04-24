@@ -1,18 +1,4 @@
-#include<iostream>
-#include<glad/glad.h>
-#include<GLFW/glfw3.h>
-#include<stb/stb_image.h>
-
-#include<glm/glm.hpp>
-#include<glm/gtc/matrix_transform.hpp>
-#include<glm/gtc/type_ptr.hpp>
-
-#include"shaderClass.h"
-#include"VAO.h"
-#include"VAO.h"
-#include"EBO.h"
-#include"Texture.h"
-#include"Camera.h"
+#include"Mesh.h"
 
 const unsigned int width = 800;
 const unsigned int height = 800;
@@ -51,13 +37,12 @@ const unsigned int height = 800;
 //	13, 15, 14,	// Facing side
 //};
 
-// Vertices coordinates
-GLfloat vertices[] =
-{ //     COORDINATES     /        COLORS        /    TexCoord    /       NORMALS     //
-	-1.0f, 0.0f,  1.0f,		0.0f, 0.0f, 0.0f,		0.0f, 0.0f,		0.0f, 1.0f, 0.0f,
-	-1.0f, 0.0f, -1.0f,		0.0f, 0.0f, 0.0f,		0.0f, 1.0f,		0.0f, 1.0f, 0.0f,
-	 1.0f, 0.0f, -1.0f,		0.0f, 0.0f, 0.0f,		1.0f, 1.0f,		0.0f, 1.0f, 0.0f,
-	 1.0f, 0.0f,  1.0f,		0.0f, 0.0f, 0.0f,		1.0f, 0.0f,		0.0f, 1.0f, 0.0f
+Vertex vertices[] =
+{ //               COORDINATES           /            COLORS          /           NORMALS         /       TEXTURE COORDINATES    //
+	Vertex{glm::vec3(-1.0f, 0.0f,  1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3(-1.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 1.0f)},
+	Vertex{glm::vec3(1.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 1.0f)},
+	Vertex{glm::vec3(1.0f, 0.0f,  1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 0.0f)}
 };
 
 // Indices for vertices order
@@ -67,16 +52,16 @@ GLuint indices[] =
 	0, 2, 3
 };
 
-GLfloat lightVertices[] =
+Vertex lightVertices[] =
 { //     COORDINATES     //
-	-0.1f, -0.1f,  0.1f,
-	-0.1f, -0.1f, -0.1f,
-	 0.1f, -0.1f, -0.1f,
-	 0.1f, -0.1f,  0.1f,
-	-0.1f,  0.1f,  0.1f,
-	-0.1f,  0.1f, -0.1f,
-	 0.1f,  0.1f, -0.1f,
-	 0.1f,  0.1f,  0.1f
+	Vertex{glm::vec3(-0.1f, -0.1f,  0.1f)},
+	Vertex{glm::vec3(-0.1f, -0.1f, -0.1f)},
+	Vertex{glm::vec3(0.1f, -0.1f, -0.1f)},
+	Vertex{glm::vec3(0.1f, -0.1f,  0.1f)},
+	Vertex{glm::vec3(-0.1f,  0.1f,  0.1f)},
+	Vertex{glm::vec3(-0.1f,  0.1f, -0.1f)},
+	Vertex{glm::vec3(0.1f,  0.1f, -0.1f)},
+	Vertex{glm::vec3(0.1f,  0.1f,  0.1f)}
 };
 
 GLuint lightIndices[] =
@@ -126,45 +111,30 @@ int main() {
 	// In this case the viewport goes from x = 0, y = 0, to x = 800, y = 800
 	glViewport(0, 0, width, height);
 
+	// Texture data
+	Texture textures[]
+	{
+		// Textures
+		Texture("Wood_Planks_014_basecolor_512.png", "diffuse", 0, GL_RGBA, GL_UNSIGNED_BYTE),
+		//Texture woodTex("pop_cat_.jpg", GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE);
+		Texture("Wood_Planks_014_specular_512.png", "specular", 1, GL_RGBA, GL_UNSIGNED_BYTE)
+	};
+
 	// Create Shader object using shaders default.vert and default.frag
 	Shader shaderProgram("default.vert", "default.frag");
+	std::vector <Vertex> verts(vertices, vertices + sizeof(vertices) / sizeof(Vertex));
+	std::vector <GLuint> ind(indices, indices + sizeof(indices) / sizeof(GLuint));
+	std::vector <Texture> tex(textures, textures + sizeof(textures) / sizeof(Texture));
+	Mesh floor(verts, ind, tex);
 
-	// Generates vertex array object and binds it
-	VAO VAO1;
-	VAO1.Bind();
-
-	// Generate vertex buffer object and links it to vertices
-	VBO VBO1(vertices, sizeof(vertices));
-	// Generate element buffer object and links it to indices
-	EBO EBO1(indices, sizeof(indices));
-
-	// Links VBO attributes such as coordinates and colors to VAO
-	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 11 * sizeof(float), (void*)0);
-	VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float)));
-	VAO1.LinkAttrib(VBO1, 2, 2, GL_FLOAT, 11 * sizeof(float), (void*)(6 * sizeof(float)));
-	VAO1.LinkAttrib(VBO1, 3, 3, GL_FLOAT, 11 * sizeof(float), (void*)(8 * sizeof(float)));
-	// Unbind all to prevent accidentally modifying
-	VAO1.Unbind();
-	VBO1.Unbind();
-	EBO1.Unbind();
 
 	// Shader for the light cube 
 	Shader lightShader("light.vert", "light.frag");
-	VAO lightVAO;
-	lightVAO.Bind();
-
-	// Generate vertex buffer object and links it to vertices
-	VBO lightVBO(lightVertices, sizeof(lightVertices));
-	// Generate element buffer object and links it to indices
-	EBO lightEBO(lightIndices, sizeof(lightIndices));
-
-	// Links VBO attributes such as coordinates and colors to VAO
-	lightVAO.LinkAttrib(lightVBO, 0, 3, GL_FLOAT, 3 * sizeof(float), (void*)0);
-
-	// Unbind all to prevent accidentally modifying them
-	lightVAO.Unbind();
-	lightVBO.Unbind();
-	lightEBO.Unbind();
+	// Store mesh data in vectors for the mesh
+	std::vector <Vertex> lightVerts(lightVertices, lightVertices + sizeof(lightVertices) / sizeof(Vertex));
+	std::vector <GLuint> lightInd(lightIndices, lightIndices + sizeof(lightIndices) / sizeof(GLuint));
+	// Create light mesh
+	Mesh lightCube(lightVerts, lightInd, tex);
 
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -184,12 +154,7 @@ int main() {
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
-	// Textures
-	Texture woodTex("Wood_Planks_014_basecolor_512.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
-	//Texture woodTex("pop_cat_.jpg", GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE);
-	woodTex.texUnit(shaderProgram, "tex0", 0);
-	Texture woodSpec("Wood_Planks_014_specular_512.png", GL_TEXTURE_2D, 1, GL_RGBA, GL_UNSIGNED_BYTE);
-	woodSpec.texUnit(shaderProgram, "tex1", 1);
+
 
 	glEnable(GL_DEPTH_TEST); // Enable depth buffer
 
@@ -208,30 +173,8 @@ int main() {
 		// Updates and exports the camera matrix to the Vertex Shader
 		camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
-		// Tell OpenGL which shader program we want to use
-		shaderProgram.Activate();
-		// Exports the camera Position to the Fragment Shader for the specular lighting
-		glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
-		// Exports the camMatrix to the Vertex Shader of the pyramid
-		camera.Matrix(shaderProgram, "camMatrix");
-
-		// Bind the texture so that appears in rendering 
-		woodTex.Bind();
-		woodSpec.Bind();
-		// Bind the VAO so OpenGL knows to use it 
-		VAO1.Bind();
-		// Drawn the triangule using the GL_TRIANGLES primitive
-		//glDrawArrays(GL_TRIANGLES, 0, 3);
-		glDrawElements(GL_TRIANGLES, sizeof(indices)/sizeof(int), GL_UNSIGNED_INT, 0);
-
-		// Tells OpenGL to use the light shader program we want to use
-		lightShader.Activate();
-		// Exports the camera Position to the Vertex Shader of the light cube
-		camera.Matrix(lightShader, "camMatrix");
-		// Bind the VAO so OpenGL knows to use it
-		lightVAO.Bind();
-		// Draw primitives , number of indices, datatype of indices, index of indices
-		glDrawElements(GL_TRIANGLES, sizeof(lightIndices) / sizeof(int), GL_UNSIGNED_INT, 0);
+		floor.Draw(shaderProgram, camera); // Draw the floor
+		lightCube.Draw(lightShader, camera); // Draw the light cube
 
 		// Swap to the back buffer with the front buffer
 		glfwSwapBuffers(window);
@@ -240,16 +183,8 @@ int main() {
 	}
 
 	// Delete all the objects we've created
-	VAO1.Delete();
-	VBO1.Delete();
-	EBO1.Delete();
-	woodTex.Delete();
-	woodSpec.Delete();
 	shaderProgram.Delete();
 
-	lightVAO.Delete();
-	lightVBO.Delete();
-	lightEBO.Delete();
 	lightShader.Delete();
 
 	// Delete window before ending the program
