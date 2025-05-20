@@ -1,8 +1,15 @@
 #include"shaderClass.h"
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+#include <experimental/filesystem>
+
+namespace fs = std::experimental::filesystem;
 
 // Reads a text file and outputs a string with everything int the text file
 std::string get_file_contents(const char* filename) 
 {
+	std::cout << "Trying to open: " << filename << std::endl;
+	std::cout << fs::current_path() << std::endl;
+
 	std::ifstream in(filename, std::ios::binary);
 	if (in) {
 		std::string contents;
