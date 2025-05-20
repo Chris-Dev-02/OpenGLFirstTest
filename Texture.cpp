@@ -1,6 +1,6 @@
 #include"Texture.h"
 
-Texture::Texture(const char* image, const char* texType, GLenum slot, GLenum format, GLenum pixelType)
+Texture::Texture(const char* image, const char* texType, GLenum slot)
 {
 	// Assings the type	of the texture to the texture object
 	type = texType;
@@ -33,8 +33,43 @@ Texture::Texture(const char* image, const char* texType, GLenum slot, GLenum for
 	// float flatcolor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	// glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, flatcolor);
 
-	// Assigns the image to the OpenGL texture object
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthImg, heightImg, 0, format, pixelType, bytes);
+	if(numColCh == 4)
+		glTexImage2D(
+			GL_TEXTURE_2D, 
+			0, 
+			GL_RGBA, 
+			widthImg, 
+			heightImg, 
+			0, 
+			GL_RGBA, 
+			GL_UNSIGNED_BYTE, 
+			bytes);
+	else if (numColCh == 3)
+		glTexImage2D(
+			GL_TEXTURE_2D,
+			0,
+			GL_RGBA,
+			widthImg,
+			heightImg,
+			0,
+			GL_RGB,
+			GL_UNSIGNED_BYTE,
+			bytes);
+	else if (numColCh == 1)
+		glTexImage2D(
+			GL_TEXTURE_2D,
+			0,
+			GL_RGBA,
+			widthImg,
+			heightImg,
+			0,
+			GL_RED,
+			GL_UNSIGNED_BYTE,
+			bytes);
+	else
+		throw std::invalid_argument("Automatic Texture type recognition failed");
+		//std::cout << "Texture error: number of color channels is not supported" << std::endl;
+
 	// Generates the mipmap of the texture
 	glGenerateMipmap(GL_TEXTURE_2D);
 
